@@ -1,0 +1,63 @@
+Repository: Ram-rajyam-backend-master
+
+Purpose
+- Concise backend for Ram Rajyam mobile/web clients. Provides REST endpoints under `/api/users`, `/api/admin`, and `/api/web`, file upload handling, authentication, and Socket.IO real-time events.
+
+Quick start
+- Install dependencies:
+  npm install
+- Run in development (auto-restart):
+  npm run dev
+- Run in production:
+  npm start
+
+Entry point
+- `index.js` — creates Express app, mounts routers, configures CORS, serves `uploads/`, and initializes Socket.IO via `socket.js`.
+
+Environment variables (used and required)
+- `MONGODB_URL` — MongoDB connection string (index.js uses `process.env.MONGODB_URL`).
+- `PORT` — optional server port (defaults to `3004`).
+- AWS S3 credentials — used in `s3.js` / `uploadMiddleware.js` when uploading to S3. Typical env names used elsewhere: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, and bucket name variables (check `s3.js`).
+- Twilio / Mailer credentials — used by controllers that send SMS or email (`utiles/email.js`, Twilio usage). Search for `process.env.TWILIO_` or `process.env.SMTP` when adding integrations.
+
+Architecture & conventions
+- Organization: `routes/` → `controllers/` → `models/` (Mongoose). Follow this pattern for new features.
+- Controllers: export functions that take `(req, res)` and return JSON via `res.status(...).json(...)`.
+- Models: Mongoose schemas; some use `mongoose-sequence` for counters/IDs.
+- File uploads: `multer` and `multer-s3` are used; see `uploadMiddleware.js` and `s3.js` for examples.
+- Realtime: `socket.js` exposes `initializeSocket(server)`; `index.js` calls it and passes the HTTP server.
+
+Key files to inspect before editing
+- `index.js` — server bootstrap and DB connection pattern.
+- `routes/` — router files mounting controller methods.
+- Several example flows:
+  - `routes/userRoutes.js` → `controllers/userController.js` → `models/userModel.js` (user flow)
+  - `s3.js` + `uploadMiddleware.js` (uploads)
+  - `utiles/email.js` (email)
+  - `auth.js` (JWT/auth helpers)
+  - `socket.js` (Socket.IO wiring)
+
+Database & migration guidance
+- No migration system present — add fields with defaults or write migration scripts if changing critical schemas.
+- Keep public API response shapes stable to avoid breaking clients.
+
+Debugging & logs
+- `index.js` enables `mongoose.set('debug', true)`; keep similar logging when adding DB queries to see raw queries.
+- Avoid logging raw secrets; log presence using `!!process.env.X` instead.
+
+Tests & sanity checks
+- There are no automated tests in the repo. For quick validation:
+  - Start server with `npm run dev`.
+  - Use Postman or curl to exercise endpoints under `/api/users`, `/api/admin`, `/api/web`.
+  - For uploads, test small image uploads and verify `uploads/` or S3 bucket.
+
+Safety notes & non-goals
+- Do not hardcode credentials or DB URIs. Use `process.env` and document required env vars.
+- Avoid upgrading core dependencies (Mongoose, AWS SDK) without local integration tests.
+
+Developer checklist for PRs
+- Confirm required env vars are documented and not added to source.
+- Run the server locally and exercise changed endpoints.
+- When changing DB schemas, provide a migration plan or default values.
+
+If you want, I can expand this into a README-style markdown (`README_BACKEND.md`) with sample curl commands and example `.env.example`. Tell me which areas to expand.

@@ -1,0 +1,172 @@
+[
+  {
+    "collection": "users",
+    "documents": [
+      {
+        "_id": {"$oid": "650000000000000000000001"},
+        "name": "Ravi Kumar",
+        "email": "ravi.kumar@example.com",
+        "password": "password123", 
+        "phone": "+919876543210",
+        "role": "user",
+        "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/users/ravi.jpg",
+        "createdAt": {"$date": "2025-12-06T00:00:00Z"}
+      },
+      {
+        "_id": {"$oid": "650000000000000000000002"},
+        "name": "Sita Sharma",
+        "email": "sita.sharma@example.com",
+        "password": "password123",
+        "phone": "+919812345678",
+        "role": "user",
+        "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/users/sita.jpg",
+        "createdAt": {"$date": "2025-12-06T00:00:00Z"}
+      }
+    ]
+  },
+  {
+    "collection": "admins",
+    "documents": [
+      {
+        "_id": {"$oid": "650000000000000000000010"},
+        "name": "Super Admin",
+        "email": "admin@example.com",
+        "password": "adminpass",
+        "role": "admin",
+        "createdAt": {"$date": "2025-12-06T00:00:00Z"}
+      }
+    ]
+  },
+  {
+    "collection": "banner",
+    "documents": [
+      {"title": "Welcome Banner", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/banner/welcome.jpg", "link": "/", "active": true}
+    ]
+  },
+  {
+    "collection": "bannerBottom",
+    "documents": [
+      {"title": "Bottom Promo", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/banner/bottom.jpg", "link": "/promo", "active": true}
+    ]
+  },
+  {
+    "collection": "newsCategory",
+    "documents": [
+      {"_id": {"$oid": "650000000000000000000100"}, "name": "Local", "createdAt": {"$date": "2025-12-01T00:00:00Z"}}
+    ]
+  },
+  {
+    "collection": "news",
+    "documents": [
+      {"title": "Festival Celebration", "category": "Local", "content": "Community festival details...", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/news/fest.jpg", "createdAt": {"$date": "2025-11-30T00:00:00Z"}}
+    ]
+  },
+  {
+    "collection": "eventsCategory",
+    "documents": [
+      {"name": "Religious"}
+    ]
+  },
+  {
+    "collection": "events",
+    "documents": [
+      {"title": "Ram Navami Program", "category": "Religious", "date": {"$date": "2026-04-10T09:00:00Z"}, "location": "Temple Grounds"}
+    ]
+  },
+  {
+    "collection": "jobsModel",
+    "documents": [
+      {"title": "Priest Assistant", "company": "Local Temple", "location": "City", "description": "Assist in rituals.", "salary": "Negotiable"}
+    ]
+  },
+  {
+    "collection": "galleryCategory",
+    "documents": [
+      {"name": "Temple Events"}
+    ]
+  },
+  {
+    "collection": "galleryModel",
+    "documents": [
+      {"title": "Procession", "category": "Temple Events", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/gallery/procession.jpg"}
+    ]
+  },
+  {
+    "collection": "volunteersModel",
+    "documents": [
+      {"name": "Anand", "phone": "+919900112233", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/volunteers/anand.jpg"}
+    ]
+  },
+  {
+    "collection": "vratCategoryModel",
+    "documents": [
+      {"name": "Fasting"}
+    ]
+  },
+  {
+    "collection": "vratModel",
+    "documents": [
+      {"title": "Ekadashi Vrat", "category": "Fasting", "description": "Monthly vrat details"}
+    ]
+  },
+  {
+    "collection": "rasamModels",
+    "documents": [
+      {"name": "Satvik Prasad", "category": "Food", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/rasam/satvik.jpg"}
+    ]
+  },
+  {
+    "collection": "matrimonyModel",
+    "documents": [
+      {"name": "Ajay Sharma", "age": 29, "gender": "male", "contact": "+919876543211", "images": ["https://dummy-bucket.blr1.digitaloceanspaces.com/matrimony/ajay1.jpg"]}
+    ]
+  },
+  {
+    "collection": "magazineModel",
+    "documents": [
+      {"title": "Ram Rajyam Monthly", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/magazine/cover.jpg", "pdf": "https://dummy-bucket.blr1.digitaloceanspaces.com/magazine/issue1.pdf"}
+    ]
+  },
+  {
+    "collection": "classifiedModels",
+    "documents": [
+      {"title": "House for Rent", "description": "2BHK near temple", "price": "10000"}
+    ]
+  },
+  {
+    "collection": "businessNetworkModels",
+    "documents": [
+      {"name": "Sharma Electronics", "category": "Electronics", "phone": "+919876000111"}
+    ]
+  },
+  {
+    "collection": "sponsorModel",
+    "documents": [
+      {"name": "Acme Corp", "contact": "+911234567890", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/sponsors/acme.jpg"}
+    ]
+  },
+  {
+    "collection": "suggestionsModel",
+    "documents": [
+      {"userEmail": "ravi.kumar@example.com", "message": "Add more event photos", "createdAt": {"$date": "2025-12-05T00:00:00Z"}}
+    ]
+  },
+  {
+    "collection": "donationModel",
+    "documents": [
+      {"donorName": "Meena", "amount": 500, "method": "online", "createdAt": {"$date": "2025-12-01T00:00:00Z"}}
+    ]
+  },
+  {
+    "collection": "bloodBankModel",
+    "documents": [
+      {"name": "City Blood Bank", "location": "Sector 5", "contact": "+911111222333"}
+    ]
+  },
+  {
+    "collection": "organisationsModel",
+    "documents": [
+      {"name": "Ram Rajyam Trust", "contact": "+919999888777", "email": "trust@example.com"}
+    ]
+  }
+]
