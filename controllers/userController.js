@@ -81,12 +81,17 @@ exports.registerUser = async (req, res) => {
         let singleImagePath;
         let businessImagePaths = [];
         if (req.files) {
-            if (req.files.image) singleImagePath = await uploadFileToS3(req.files.image[0], 'user-profiles');
-            if (req.files.businessImages) {
-                for (const file of req.files.businessImages) {
-                    const key = await uploadFileToS3(file, 'business-images');
-                    businessImagePaths.push(key);
+            try {
+                if (req.files.image) singleImagePath = await uploadFileToS3(req.files.image[0], 'user-profiles');
+                if (req.files.businessImages) {
+                    for (const file of req.files.businessImages) {
+                        const key = await uploadFileToS3(file, 'business-images');
+                        businessImagePaths.push(key);
+                    }
                 }
+            } catch (uploadError) {
+                console.warn('File upload failed, proceeding without images:', uploadError.message);
+                // Allow registration to continue even if upload fails
             }
         }
         

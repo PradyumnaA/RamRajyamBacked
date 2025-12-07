@@ -2,10 +2,9 @@ const { S3Client } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
 const { v4: uuidv4 } = require('uuid');
 
-// Check if the endpoint variable is loaded. If not, the app should fail fast.
+// Check if the endpoint variable is loaded. Warn but don't exit (for local development).
 if (!process.env.DO_SPACES_ENDPOINT) {
-    console.error("FATAL ERROR: DO_SPACES_ENDPOINT is not defined in the .env file.");
-    process.exit(1); // Exit the application if the config is missing.
+    console.warn("WARNING: DO_SPACES_ENDPOINT is not defined. File uploads will fail. Set this in .env for production.");
 }
 
 // THE CORRECT S3 CLIENT INITIALIZATION FOR DIGITALOCEAN

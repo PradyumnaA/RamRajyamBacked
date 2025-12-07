@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     selectedJobCategories: [String], // Changed to array of strings to hold multiple categories
     image: {
         type: String,
-        required: true
+        required: false  // Made optional for local development
     },
     password: {
         type: String,
