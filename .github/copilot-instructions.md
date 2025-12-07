@@ -43,10 +43,27 @@ This Node.js backend uses Express + Mongoose and is organized by route → contr
 
 - **Files to inspect for examples**:
   - `index.js` — server, DB connect, routes and sockets wiring.
-  - `routes/userRoutes.js`, `controllers/userController.js`, `models/userModel.js` — user flow example.
+  - `routes/userRoutes.js`, `controllers/userController.js`, `models/userModels.js` — user flow example.
   - `s3.js`, `uploadMiddleware.js` — file upload handling.
   - `socket.js` — real-time event init.
   - `utiles/email.js` — email sending pattern.
+
+- **API Testing (Postman/REST clients)**:
+  - Base URL local: `http://localhost:3004` or deployed: `https://ramrajyambacked.onrender.com`
+  - User registration: `POST /api/users/register` or `POST /users/register` (both work after recent mount)
+    - Accepts `multipart/form-data` with fields: `fullName`, `email`, `password`, `contactNo`, `gender` (required), plus optional fields (see `models/userModels.js`)
+    - Optional file uploads: `image` (single) and `businessImages` (array, max 10)
+    - Returns: `{status: 'success', data: {user, token, shareLink}}`
+  - User login: `POST /api/users/login` — body: `{email, password}` or `{contactNo, password}` (JSON)
+  - Protected routes use `requireAuth('user')` middleware — pass JWT in `Authorization: Bearer <token>` header.
+  - Example minimal registration body (form-data):
+    ```
+    fullName: "Test User"
+    email: "test@example.com"
+    password: "password123"
+    contactNo: "9876543210"
+    gender: "Male"
+    ```
 
 If you need to change global behaviors (auth, DB, upload), propose a short plan and run manual checks. Ask for environment values or test credentials if you cannot reproduce an integration locally.
 

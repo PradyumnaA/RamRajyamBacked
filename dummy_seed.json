@@ -4,20 +4,22 @@
     "documents": [
       {
         "_id": {"$oid": "650000000000000000000001"},
-        "name": "Ravi Kumar",
+        "fullName": "Ravi Kumar",
         "email": "ravi.kumar@example.com",
-        "password": "password123", 
-        "phone": "+919876543210",
+        "password": "password123",
+        "contactNo": "9876543210",
+        "gender": "Male",
         "role": "user",
         "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/users/ravi.jpg",
         "createdAt": {"$date": "2025-12-06T00:00:00Z"}
       },
       {
         "_id": {"$oid": "650000000000000000000002"},
-        "name": "Sita Sharma",
+        "fullName": "Sita Sharma",
         "email": "sita.sharma@example.com",
         "password": "password123",
-        "phone": "+919812345678",
+        "contactNo": "9812345678",
+        "gender": "Female",
         "role": "user",
         "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/users/sita.jpg",
         "createdAt": {"$date": "2025-12-06T00:00:00Z"}
@@ -94,7 +96,7 @@
   {
     "collection": "volunteersModel",
     "documents": [
-      {"name": "Anand", "phone": "+919900112233", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/volunteers/anand.jpg"}
+      {"name": "Anand", "phone": "9900112233", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/volunteers/anand.jpg"}
     ]
   },
   {
@@ -118,7 +120,7 @@
   {
     "collection": "matrimonyModel",
     "documents": [
-      {"name": "Ajay Sharma", "age": 29, "gender": "male", "contact": "+919876543211", "images": ["https://dummy-bucket.blr1.digitaloceanspaces.com/matrimony/ajay1.jpg"]}
+      {"name": "Ajay Sharma", "age": 29, "gender": "male", "contact": "9876543211", "images": ["https://dummy-bucket.blr1.digitaloceanspaces.com/matrimony/ajay1.jpg"]}
     ]
   },
   {
@@ -136,13 +138,13 @@
   {
     "collection": "businessNetworkModels",
     "documents": [
-      {"name": "Sharma Electronics", "category": "Electronics", "phone": "+919876000111"}
+      {"name": "Sharma Electronics", "category": "Electronics", "phone": "9876000111"}
     ]
   },
   {
     "collection": "sponsorModel",
     "documents": [
-      {"name": "Acme Corp", "contact": "+911234567890", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/sponsors/acme.jpg"}
+      {"name": "Acme Corp", "contact": "1234567890", "image": "https://dummy-bucket.blr1.digitaloceanspaces.com/sponsors/acme.jpg"}
     ]
   },
   {
@@ -160,13 +162,13 @@
   {
     "collection": "bloodBankModel",
     "documents": [
-      {"name": "City Blood Bank", "location": "Sector 5", "contact": "+911111222333"}
+      {"name": "City Blood Bank", "location": "Sector 5", "contact": "1111222333"}
     ]
   },
   {
     "collection": "organisationsModel",
     "documents": [
-      {"name": "Ram Rajyam Trust", "contact": "+919999888777", "email": "trust@example.com"}
+      {"name": "Ram Rajyam Trust", "contact": "9999888777", "email": "trust@example.com"}
     ]
   }
 ]
