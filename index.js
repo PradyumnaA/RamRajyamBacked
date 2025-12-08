@@ -74,6 +74,21 @@ app.get('/', (req, res) => {
 
     console.log('✅ Connected to MongoDB');
 
+    // FIX: Drop problematic regId_1 unique index causing duplicate key error
+    // This is a one-time fix for E11000 duplicate key error on regId field
+    try {
+      const db = mongoose.connection.db;
+      const usersCollection = db.collection('users');
+      await usersCollection.dropIndex('regId_1');
+      console.log('✅ Dropped regId_1 index (fix for duplicate key error)');
+    } catch (err) {
+      if (err.code === 27) {
+        console.log('ℹ️  regId_1 index not found (already removed)');
+      } else {
+        console.warn('Warning dropping regId_1 index:', err.message);
+      }
+    }
+
     // helpful listeners
     mongoose.connection.on('connected', () => {
       console.log('Mongoose default connection open');
