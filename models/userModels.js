@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
     regId: {
-        type: Number,
-        unique: false,  // Removed unique constraint to allow null values
+        type: String,
+        unique: True,  // Removed unique constraint to allow null values
         sparse: true    // Only enforce uniqueness on non-null values
     },
     fullName: {
