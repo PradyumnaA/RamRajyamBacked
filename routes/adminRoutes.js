@@ -656,7 +656,7 @@ router.delete('/delete/:id', aboutController.deleteCategoryById);
 
 // ADMIN ONLY: Delete user by ID (requires admin auth)
 // Usage: DELETE /api/admin/users/:id with admin JWT token
-const { requireAuth } = require('../auth');
+// const { requireAuth } = require('../auth');
 router.delete('/users/:id', requireAuth('admin'), userController.deleteUserById);
 
 module.exports = router;
