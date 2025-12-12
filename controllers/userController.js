@@ -273,6 +273,43 @@ exports.resetPassword = async (req, res) => {
         console.error('Error in resetPassword:', error);
         res.status(500).json({
             status: 'error',
+            message: error.message || 'Internal server error'
+        });
+    }
+};
+
+// ADMIN ONLY: Delete a user by ID (called from admin panel)
+exports.deleteUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate user ID
+        if (!id) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User ID is required'
+            });
+        }
+
+        // Find and delete the user
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message: 'User deleted successfully',
+            data: { deletedUser: user.fullName }
+        });
+    } catch (error) {
+        console.error('Error in deleteUserById:', error);
+        res.status(500).json({
+            status: 'error',
             message: 'Internal server error'
         });
     }
