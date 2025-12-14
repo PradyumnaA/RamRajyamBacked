@@ -591,12 +591,7 @@ exports.getAllUsers = async (req, res) => {
         const { profileType, username, city, bloodGroup, selectedJobCategories, page = 1, limit = 10 } = req.query;
         let query = {
             // Exclude admin users - show only registered members
-            // Include users with role 'user' or without role field (for backward compatibility)
-            $or: [
-                { role: 'user' },
-                { role: { $exists: false } },
-                { role: null }
-            ]
+            role: { $in: ['user', null, undefined] }
         };
         if (username) query.fullName = { $regex: username, $options: 'i' };
         if (city) query.city = { $regex: city, $options: 'i' };
@@ -612,6 +607,7 @@ exports.getAllUsers = async (req, res) => {
 
         res.status(200).json({ status: 'success', data: { users: usersWithUrls, currentPage: page, totalPages: Math.ceil(count / limit) } });
     } catch (err) {
+        console.error('Error in getAllUsers:', err);
         res.status(404).json({ status: 'fail', message: err.message });
     }
 };

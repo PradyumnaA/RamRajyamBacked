@@ -22,14 +22,17 @@ const requireAuth = (roles = []) => {
             const decoded = jwt.verify(token, secretKey);
             let user;
 
-            if (roles.includes('admin')) {
+            if (roles.length === 0 || roles.includes('admin')) {
                 user = await Admin.findById(decoded.adminId);
+                if (!user && (roles.length === 0 || roles.includes('user'))) {
+                    user = await User.findById(decoded.userId);
+                }
             } else if (roles.includes('user')) {
                 user = await User.findById(decoded.userId);
             }
 
             if (!user) {
-                throw new Error();
+                throw new Error('User not found');
             }
 
             req.user = user;

@@ -172,16 +172,14 @@ exports.getAllUsersExceptOwn = async (req, res) => {
         // Include users with role 'user' or without role field (for backward compatibility)
         const users = await User.find({ 
             _id: { $ne: req.user._id },
-            $or: [
-                { role: 'user' },
-                { role: { $exists: false } },
-                { role: null }
-            ]
-        });
+            role: { $in: ['user', null, undefined] }
+        }).collation({ locale: 'en', strength: 2 });
+        
         const usersWithUrls = users.map(user => formatUserResponse(user));
         res.status(200).json({ status: 'success', data: usersWithUrls });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
+        console.error('Error in getAllUsersExceptOwn:', error);
+        res.status(500).json({ status: 'error', message: 'Internal server error', error: error.message });
     }
 };
 
