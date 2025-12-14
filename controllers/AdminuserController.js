@@ -590,7 +590,13 @@ exports.getAllUsers = async (req, res) => {
     try {
         const { profileType, username, city, bloodGroup, selectedJobCategories, page = 1, limit = 10 } = req.query;
         let query = {
-            role: { $ne: 'admin' } // Exclude admin users - show only registered members
+            // Exclude admin users - show only registered members
+            // Include users with role 'user' or without role field (for backward compatibility)
+            $or: [
+                { role: 'user' },
+                { role: { $exists: false } },
+                { role: null }
+            ]
         };
         if (username) query.fullName = { $regex: username, $options: 'i' };
         if (city) query.city = { $regex: city, $options: 'i' };
