@@ -168,7 +168,11 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getAllUsersExceptOwn = async (req, res) => {
     try {
-        const users = await User.find({ _id: { $ne: req.user._id } });
+        // Fetch all users except the current user and exclude admin users
+        const users = await User.find({ 
+            _id: { $ne: req.user._id },
+            role: { $ne: 'admin' }
+        });
         const usersWithUrls = users.map(user => formatUserResponse(user));
         res.status(200).json({ status: 'success', data: usersWithUrls });
     } catch (error) {
