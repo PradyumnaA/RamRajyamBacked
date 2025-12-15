@@ -6,7 +6,6 @@ const varatSubCategorySchema = new mongoose.Schema({
   image: { type: String, required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'vratCategory' },
 });
-});
 
 const subCategory = mongoose.model('varatSubCategory', varatSubCategorySchema);
 
