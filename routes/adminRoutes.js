@@ -392,6 +392,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post('/register', registerAdmin);
 router.post('/login', loginAdmin);
 
+// ✅ ALL ROUTES BELOW REQUIRE ADMIN AUTHENTICATION
+// Only admin users can access member management (add, update, delete)
 router.use(requireAuth('admin'));
 
 // User Management Routes

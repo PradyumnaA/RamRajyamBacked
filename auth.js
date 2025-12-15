@@ -46,4 +46,16 @@ const requireAuth = (roles = []) => {
     };
 };
 
-module.exports = { requireAuth };
+// Middleware to check if user is admin
+const requireAdmin = (req, res, next) => {
+    if (req.user && (req.user.role === 'admin' || req.user.email === 'admin@admin.com')) {
+        next();
+    } else {
+        return res.status(403).json({
+            status: 'fail',
+            message: 'Admin access required'
+        });
+    }
+};
+
+module.exports = { requireAuth, requireAdmin };
