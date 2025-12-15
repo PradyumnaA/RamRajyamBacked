@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Counter = require('./volunteersCounter');
 
 const volunteerSchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   city: { type: String, required: true },
   name: { type: String, required: true },
   contactNo: { type: String, required: true },

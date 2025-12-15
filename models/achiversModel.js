@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const achiversSchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   title: { type: String, required: true },
   image: { type: String, required: true },
-  category: { type: Number, ref: 'Category', required: true }, // Referencing by `id` instead of `_id`
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'AchiversCategory', required: true }, // Referencing by `_id` instead of `id`
   description: { type: String, required: true },
   date: { type: Date, required: true },
   city: { type: String, required: true },

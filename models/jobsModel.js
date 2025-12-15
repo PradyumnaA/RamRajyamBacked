@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const JobCounter = require('./jobsCounter');
 
 const jobSchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   title: { type: String, required: true },
   salary: { type: String, required: true },
   description: { type: String, required: true },

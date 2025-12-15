@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const bloodBankSchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   name: { type: String, required: true },
   address: { type: String, required: true },
   contactNo: { type: String, required: true },
