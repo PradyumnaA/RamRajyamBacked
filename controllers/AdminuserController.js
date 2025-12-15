@@ -590,8 +590,8 @@ exports.getAllUsers = async (req, res) => {
     try {
         const { profileType, username, city, bloodGroup, selectedJobCategories, page = 1, limit = 10 } = req.query;
         let query = {
-            // Exclude admin users - show only registered members
-            role: { $in: ['user', null, undefined] }
+            // Simply exclude admin users by role
+            role: { $ne: 'admin' }
         };
         if (username) query.fullName = { $regex: username, $options: 'i' };
         if (city) query.city = { $regex: city, $options: 'i' };
@@ -600,9 +600,13 @@ exports.getAllUsers = async (req, res) => {
         if (profileType === 'business') query['businessProfile.firmName'] = { $exists: true, $ne: '' };
         if (profileType === 'personal') query['businessProfile.firmName'] = { $exists: false };
 
+        console.log('getAllUsers query:', JSON.stringify(query));
+        
         const count = await User.countDocuments(query);
         const users = await User.find(query).skip((page - 1) * limit).limit(limit).select('-password');
 
+        console.log('Found users:', count, 'Returning:', users.length);
+        
         const usersWithUrls = users.map(user => formatUserResponse(user));
 
         res.status(200).json({ status: 'success', data: { users: usersWithUrls, currentPage: page, totalPages: Math.ceil(count / limit) } });

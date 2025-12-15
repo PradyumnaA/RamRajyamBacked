@@ -168,14 +168,20 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getAllUsersExceptOwn = async (req, res) => {
     try {
-        // Fetch all users except the current user and exclude admin users
-        // Include users with role 'user' or without role field (for backward compatibility)
-        const users = await User.find({ 
-            _id: { $ne: req.user._id },
-            role: { $in: ['user', null, undefined] }
-        }).collation({ locale: 'en', strength: 2 });
+        console.log('Fetching users... Current user ID:', req.user._id);
         
-        const usersWithUrls = users.map(user => formatUserResponse(user));
+        // Fetch all users except the current user and exclude admin users
+        // Simple approach: get all users except current, filter out admins
+        const users = await User.find({ 
+            _id: { $ne: req.user._id }
+        });
+        
+        // Filter out admin users in code (more reliable)
+        const filteredUsers = users.filter(user => user.role !== 'admin');
+        
+        console.log('Total users found:', users.length, 'After filtering:', filteredUsers.length);
+        
+        const usersWithUrls = filteredUsers.map(user => formatUserResponse(user));
         res.status(200).json({ status: 'success', data: usersWithUrls });
     } catch (error) {
         console.error('Error in getAllUsersExceptOwn:', error);
