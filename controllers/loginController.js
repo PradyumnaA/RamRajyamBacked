@@ -23,7 +23,7 @@ exports.loginUser = async (req, res) => {
         { contactNo: contactNo || '' },
         { email: email || '' }
       ]
-    }).lean(); // lean() returns plain JS object
+    });
 
     if (!user) {
       return res.status(401).json({
