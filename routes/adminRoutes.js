@@ -407,7 +407,6 @@ router.put('/users/:id', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'businessImages', maxCount: 10 }
 ]), userController.updateUserById);
-router.delete('/users/:id', userController.deleteUserById);
 
 // Caste Routes
 router.post('/caste', upload.none(), casteController.addEntry);
