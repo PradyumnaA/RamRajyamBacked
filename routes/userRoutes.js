@@ -254,7 +254,7 @@ const magazineController = require('../controllers/userMagazineController');
 const suggestionController = require('../controllers/userSuggestions');
 const categoryOptionsController = require("../controllers/optionsCategoryController");
 const aboutController = require('../controllers/aboutController');
-const { requireAuth } = require('../auth');
+const requireAuth = require('../auth');
 
 // --- CORRECT & CLEAN MULTER CONFIGURATION ---
 // We can use a single multer instance for all types of uploads.

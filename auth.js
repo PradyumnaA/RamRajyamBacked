@@ -43,4 +43,4 @@ const requireAuth = (roles = []) => {
     };
 };
 
-module.exports = { requireAuth };
+module.exports = requireAuth;

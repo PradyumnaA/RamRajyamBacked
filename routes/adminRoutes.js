@@ -338,7 +338,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { registerAdmin, loginAdmin } = require('../controllers/adminController');
-const { requireAuth } = require("../auth");
+const requireAuth = require("../auth");
 
 // Controller Imports
 const categoryOccupationController = require('../controllers/jobCategoryController');

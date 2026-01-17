@@ -58,4 +58,4 @@ const uploadFields = upload.fields([
     { name: 'businessImages', maxCount: 10 }
 ]);
 
-module.exports = { uploadFields };
+module.exports = upload;

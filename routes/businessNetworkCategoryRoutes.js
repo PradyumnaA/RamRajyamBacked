@@ -32,7 +32,7 @@
 const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/businessNetworkCategoryController');
-const { requireAuth } = require('../auth'); // Assuming you use this
+const requireAuth = require('../auth'); // Assuming you use this
 const multer = require('multer');
 
 // --- CHANGE 1: diskStorage ko memoryStorage se badlein ---

@@ -7,6 +7,8 @@ const { initializeSocket } = require('./socket');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const webRoutes = require('./routes/webRoutes');
+const booksLibraryRoutes = require('./routes/booksLibraryRoutes');
+const hospitalEmergencyRoutes = require('./routes/hospitalEmergencyRoutes');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { S3Client } = require('@aws-sdk/client-s3');
@@ -35,6 +37,8 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/web', webRoutes);
+app.use('/api/books', booksLibraryRoutes);
+app.use('/api/doctors', hospitalEmergencyRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to Backend app!');

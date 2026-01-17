@@ -22,7 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const businessNetworkController = require('../controllers/businessNetworkController');
-const { requireAuth } = require('../auth'); // Import authentication middleware
+const requireAuth = require('../auth'); // Import authentication middleware
 const multer = require('multer');
 
 // --- CHANGE IS HERE ---
