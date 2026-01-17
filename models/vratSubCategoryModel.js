@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const varatSubCategorySchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   name: { type: String, required: true ,unique: true},
   image: { type: String, required: true },
-  category: { type: Number, ref: 'Category', },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'vratCategory' },
 });
 
 const subCategory = mongoose.model('varatSubCategory', varatSubCategorySchema);

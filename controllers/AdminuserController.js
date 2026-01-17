@@ -589,7 +589,10 @@ exports.registerUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
     try {
         const { profileType, username, city, bloodGroup, selectedJobCategories, page = 1, limit = 10 } = req.query;
-        let query = {};
+        let query = {
+            // Simply exclude admin users by role
+            role: { $ne: 'admin' }
+        };
         if (username) query.fullName = { $regex: username, $options: 'i' };
         if (city) query.city = { $regex: city, $options: 'i' };
         if (bloodGroup) query.bloodGroup = { $regex: bloodGroup, $options: 'i' };
@@ -597,13 +600,18 @@ exports.getAllUsers = async (req, res) => {
         if (profileType === 'business') query['businessProfile.firmName'] = { $exists: true, $ne: '' };
         if (profileType === 'personal') query['businessProfile.firmName'] = { $exists: false };
 
+        console.log('getAllUsers query:', JSON.stringify(query));
+        
         const count = await User.countDocuments(query);
         const users = await User.find(query).skip((page - 1) * limit).limit(limit).select('-password');
 
+        console.log('Found users:', count, 'Returning:', users.length);
+        
         const usersWithUrls = users.map(user => formatUserResponse(user));
 
         res.status(200).json({ status: 'success', data: { users: usersWithUrls, currentPage: page, totalPages: Math.ceil(count / limit) } });
     } catch (err) {
+        console.error('Error in getAllUsers:', err);
         res.status(404).json({ status: 'fail', message: err.message });
     }
 };

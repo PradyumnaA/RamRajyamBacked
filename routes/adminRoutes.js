@@ -392,6 +392,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post('/register', registerAdmin);
 router.post('/login', loginAdmin);
 
+// ✅ ALL ROUTES BELOW REQUIRE ADMIN AUTHENTICATION
+// Only admin users can access member management (add, update, delete)
 router.use(requireAuth('admin'));
 
 // User Management Routes
@@ -405,7 +407,6 @@ router.put('/users/:id', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'businessImages', maxCount: 10 }
 ]), userController.updateUserById);
-router.delete('/users/:id', userController.deleteUserById);
 
 // Caste Routes
 router.post('/caste', upload.none(), casteController.addEntry);
@@ -653,5 +654,10 @@ router.get('/getall', aboutController.getCategories);
 router.get('/getbyid/:id', aboutController.getCategoryById);
 router.put('/update/:id', upload.single('image'), aboutController.updateCategoryById);
 router.delete('/delete/:id', aboutController.deleteCategoryById);
+
+// ADMIN ONLY: Delete user by ID (requires admin auth)
+// Usage: DELETE /api/admin/users/:id with admin JWT token
+// const { requireAuth } = require('../auth');
+router.delete('/users/:id', requireAuth('admin'), userController.deleteUserById);
 
 module.exports = router;

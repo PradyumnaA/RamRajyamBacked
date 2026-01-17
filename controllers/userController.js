@@ -168,11 +168,24 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getAllUsersExceptOwn = async (req, res) => {
     try {
-        const users = await User.find({ _id: { $ne: req.user._id } });
-        const usersWithUrls = users.map(user => formatUserResponse(user));
+        console.log('Fetching users... Current user ID:', req.user._id);
+        
+        // Fetch all users except the current user and exclude admin users
+        // Simple approach: get all users except current, filter out admins
+        const users = await User.find({ 
+            _id: { $ne: req.user._id }
+        });
+        
+        // Filter out admin users in code (more reliable)
+        const filteredUsers = users.filter(user => user.role !== 'admin');
+        
+        console.log('Total users found:', users.length, 'After filtering:', filteredUsers.length);
+        
+        const usersWithUrls = filteredUsers.map(user => formatUserResponse(user));
         res.status(200).json({ status: 'success', data: usersWithUrls });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
+        console.error('Error in getAllUsersExceptOwn:', error);
+        res.status(500).json({ status: 'error', message: 'Internal server error', error: error.message });
     }
 };
 
@@ -271,6 +284,43 @@ exports.resetPassword = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in resetPassword:', error);
+        res.status(500).json({
+            status: 'error',
+            message: error.message || 'Internal server error'
+        });
+    }
+};
+
+// ADMIN ONLY: Delete a user by ID (called from admin panel)
+exports.deleteUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate user ID
+        if (!id) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User ID is required'
+            });
+        }
+
+        // Find and delete the user
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message: 'User deleted successfully',
+            data: { deletedUser: user.fullName }
+        });
+    } catch (error) {
+        console.error('Error in deleteUserById:', error);
         res.status(500).json({
             status: 'error',
             message: 'Internal server error'

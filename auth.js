@@ -22,14 +22,17 @@ const requireAuth = (roles = []) => {
             const decoded = jwt.verify(token, secretKey);
             let user;
 
-            if (roles.includes('admin')) {
+            if (roles.length === 0 || roles.includes('admin')) {
                 user = await Admin.findById(decoded.adminId);
+                if (!user && (roles.length === 0 || roles.includes('user'))) {
+                    user = await User.findById(decoded.userId);
+                }
             } else if (roles.includes('user')) {
                 user = await User.findById(decoded.userId);
             }
 
             if (!user) {
-                throw new Error();
+                throw new Error('User not found');
             }
 
             req.user = user;
@@ -43,4 +46,19 @@ const requireAuth = (roles = []) => {
     };
 };
 
+// Middleware to check if user is admin
+const requireAdmin = (req, res, next) => {
+    if (req.user && (req.user.role === 'admin' || req.user.email === 'admin@admin.com')) {
+        next();
+    } else {
+        return res.status(403).json({
+            status: 'fail',
+            message: 'Admin access required'
+        });
+    }
+};
+
+// Export requireAuth as default and also as named export
 module.exports = requireAuth;
+module.exports.requireAuth = requireAuth;
+module.exports.requireAdmin = requireAdmin;

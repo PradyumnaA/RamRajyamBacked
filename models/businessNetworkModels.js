@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const businessNetworkSchema = new mongoose.Schema({
-  id: { type: Number, unique: true },
+  id: { type: String, unique: true },
   title: { type: String, required: true },
   image: { type: String, required: true },
-  category: { type: Number, ref: 'Category', required: true },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
   description: { type: String, required: true },
   city: { type: String, required: true },
   pincode: { type: String, required: true },

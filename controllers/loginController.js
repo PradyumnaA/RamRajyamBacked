@@ -6,23 +6,29 @@ const bcrypt = require('bcryptjs');
 
 exports.loginUser = async (req, res) => {
   try {
-    const { contactNo, password } = req.body;
+    // MODIFIED: Accept both email and contactNo for login
+    const { contactNo, email, password } = req.body;
 
-    // basic validation
-    if (!contactNo || !password) {
+    // basic validation - require either email or contactNo, plus password
+    if ((!contactNo && !email) || !password) {
       return res.status(400).json({
         status: 'fail',
-        message: 'contactNo and password are required'
+        message: 'Email or contactNo, and password are required'
       });
     }
 
-    // Find the user by contact number
-    const user = await User.findOne({ contactNo }).lean(); // lean() returns plain JS object
+    // Find the user by contact number OR email
+    const user = await User.findOne({
+      $or: [
+        { contactNo: contactNo || '' },
+        { email: email || '' }
+      ]
+    });
 
     if (!user) {
       return res.status(401).json({
         status: 'fail',
-        message: 'Invalid contactNo or password'
+        message: 'Invalid credentials'
       });
     }
 
