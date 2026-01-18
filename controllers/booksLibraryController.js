@@ -3,6 +3,7 @@ const BooksLibraryCounter = require('../models/booksLibraryCounter');
 const BookLikes = require('../models/bookLikesModel');
 const { v4: uuidv4 } = require('uuid');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const sharp = require('sharp');
 
 // Initialize S3 Client
 const s3 = new S3Client({
@@ -21,6 +22,23 @@ const getNextSequenceValue = async (sequenceName) => {
     { new: true, upsert: true }
   );
   return sequenceDocument.seq;
+};
+
+// Helper function to compress image
+const compressImage = async (imageBuffer, fileName) => {
+  try {
+    const compressed = await sharp(imageBuffer)
+      .resize(800, 1200, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality: 75, progressive: true })
+      .toBuffer();
+    return compressed;
+  } catch (error) {
+    console.error('Image compression error:', error);
+    return imageBuffer; // Return original if compression fails
+  }
 };
 
 // Get all books with filters
@@ -112,11 +130,15 @@ exports.createBook = async (req, res) => {
     // Upload image if provided
     if (req.file) {
       const imageKey = `books/${uuidv4()}_${req.file.originalname}`;
+      
+      // Compress image before uploading
+      const compressedBuffer = await compressImage(req.file.buffer, req.file.originalname);
+      
       const params = {
         Bucket: process.env.UPLOADSIMAGEBUCKET,
         Key: imageKey,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
+        Body: compressedBuffer,
+        ContentType: 'image/jpeg',
       };
 
       await s3.send(new PutObjectCommand(params));
@@ -183,11 +205,15 @@ exports.updateBook = async (req, res) => {
     // Handle image upload if provided
     if (req.file) {
       const imageKey = `books/${uuidv4()}_${req.file.originalname}`;
+      
+      // Compress image before uploading
+      const compressedBuffer = await compressImage(req.file.buffer, req.file.originalname);
+      
       const params = {
         Bucket: process.env.UPLOADSIMAGEBUCKET,
         Key: imageKey,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
+        Body: compressedBuffer,
+        ContentType: 'image/jpeg',
       };
 
       await s3.send(new PutObjectCommand(params));
@@ -356,17 +382,29 @@ exports.adminCreateBook = async (req, res) => {
       });
     }
 
+    if (!req.files || !req.files.screenshot) {
+      return res.status(400).json({
+        success: false,
+        message: 'Screenshot is required',
+      });
+    }
+
     let imageUrl = null;
     let pdfUrl = null;
+    let screenshotUrl = null;
 
     // Upload image if provided
     if (req.files && req.files.image) {
       const imageKey = `books/admin/${uuidv4()}_${req.files.image[0].originalname}`;
+      
+      // Compress image before uploading
+      const compressedBuffer = await compressImage(req.files.image[0].buffer, req.files.image[0].originalname);
+      
       const params = {
         Bucket: process.env.UPLOADSIMAGEBUCKET,
         Key: imageKey,
-        Body: req.files.image[0].buffer,
-        ContentType: req.files.image[0].mimetype,
+        Body: compressedBuffer,
+        ContentType: 'image/jpeg',
       };
 
       await s3.send(new PutObjectCommand(params));
@@ -385,6 +423,22 @@ exports.adminCreateBook = async (req, res) => {
     await s3.send(new PutObjectCommand(pdfParams));
     pdfUrl = `https://${process.env.UPLOADSIMAGEBUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${pdfKey}`;
 
+    // Upload screenshot (required) - with compression
+    const screenshotKey = `books/admin/screenshots/${uuidv4()}_${req.files.screenshot[0].originalname}`;
+    
+    // Compress screenshot before uploading
+    const compressedScreenshot = await compressImage(req.files.screenshot[0].buffer, req.files.screenshot[0].originalname);
+    
+    const screenshotParams = {
+      Bucket: process.env.UPLOADSIMAGEBUCKET,
+      Key: screenshotKey,
+      Body: compressedScreenshot,
+      ContentType: 'image/jpeg',
+    };
+
+    await s3.send(new PutObjectCommand(screenshotParams));
+    screenshotUrl = `https://${process.env.UPLOADSIMAGEBUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${screenshotKey}`;
+
     const id = await getNextSequenceValue('booksLibraryId');
 
     const book = new BooksLibrary({
@@ -397,6 +451,7 @@ exports.adminCreateBook = async (req, res) => {
       category,
       image: imageUrl,
       pdfFile: pdfUrl,
+      screenshot: screenshotUrl,
       sellerName: 'Admin',
       sellerContact: 'admin@kurmisamaj.com',
       sellerId: req.user._id,

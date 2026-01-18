@@ -17,4 +17,9 @@ router.put('/:id', auth, uploadMiddleware.single('image'), hospitalEmergencyCont
 router.delete('/:id', auth, hospitalEmergencyController.deleteDoctor);
 router.post('/:id/review', auth, hospitalEmergencyController.addReview);
 
+// Admin Only Routes
+router.post('/admin/add-doctor', auth, uploadMiddleware.single('image'), hospitalEmergencyController.adminAddDoctor);
+router.put('/admin/update-doctor/:id', auth, uploadMiddleware.single('image'), hospitalEmergencyController.adminUpdateDoctor);
+router.delete('/admin/delete-doctor/:id', auth, hospitalEmergencyController.adminDeleteDoctor);
+
 module.exports = router;

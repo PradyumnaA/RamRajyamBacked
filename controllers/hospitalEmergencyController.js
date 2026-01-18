@@ -1,5 +1,6 @@
 const HospitalEmergency = require('../models/hospitalEmergencyModel');
 const HospitalEmergencyCounter = require('../models/hospitalEmergencyCounter');
+const User = require('../models/userModel');
 const { v4: uuidv4 } = require('uuid');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
@@ -415,3 +416,176 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
+
+// Admin Only: Add new specialist/doctor
+exports.adminAddDoctor = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { name, specialty, city, hospital, phone, email, qualifications, experience, description } = req.body;
+
+    // Check if user is admin
+    const user = await User.findById(userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can add doctors',
+      });
+    }
+
+    // Validate required fields
+    if (!name || !specialty || !city || !hospital || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields',
+      });
+    }
+
+    let imageUrl = null;
+
+    // Upload profile image if provided
+    if (req.file) {
+      const imageKey = `doctors/${uuidv4()}_${req.file.originalname}`;
+      const params = {
+        Bucket: process.env.UPLOADSIMAGEBUCKET,
+        Key: imageKey,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      };
+
+      await s3.send(new PutObjectCommand(params));
+      imageUrl = `https://${process.env.UPLOADSIMAGEBUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageKey}`;
+    }
+
+    const id = await getNextSequenceValue('hospitalEmergencyId');
+
+    const doctor = new HospitalEmergency({
+      id,
+      name,
+      specialty,
+      city,
+      hospital,
+      phone,
+      email: email || req.user.email,
+      qualifications: qualifications || [],
+      experience: experience || 0,
+      description,
+      image: imageUrl,
+      userId,
+      verified: true, // Admin-added doctors are auto-verified
+      verifiedByAdmin: true,
+      isKurmiSamajMember: true,
+    });
+
+    await doctor.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Doctor added successfully by admin',
+      data: doctor,
+    });
+  } catch (error) {
+    console.error('Error adding doctor:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding doctor',
+      error: error.message,
+    });
+  }
+};
+
+// Admin Only: Delete specialist/doctor
+exports.adminDeleteDoctor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
+
+    // Check if user is admin
+    const user = await User.findById(userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can delete doctors',
+      });
+    }
+
+    const doctor = await HospitalEmergency.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor not found',
+      });
+    }
+
+    await HospitalEmergency.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Doctor deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting doctor:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting doctor',
+      error: error.message,
+    });
+  }
+};
+
+// Admin Only: Update doctor
+exports.adminUpdateDoctor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
+    const updates = req.body;
+
+    // Check if user is admin
+    const user = await User.findById(userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can update doctors',
+      });
+    }
+
+    const doctor = await HospitalEmergency.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor not found',
+      });
+    }
+
+    // Handle image upload if provided
+    if (req.file) {
+      const imageKey = `doctors/${uuidv4()}_${req.file.originalname}`;
+      const params = {
+        Bucket: process.env.UPLOADSIMAGEBUCKET,
+        Key: imageKey,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      };
+
+      await s3.send(new PutObjectCommand(params));
+      updates.image = `https://${process.env.UPLOADSIMAGEBUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageKey}`;
+    }
+
+    Object.assign(doctor, updates);
+    await doctor.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Doctor updated successfully',
+      data: doctor,
+    });
+  } catch (error) {
+    console.error('Error updating doctor:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating doctor',
+      error: error.message,
+    });
+  }
+};

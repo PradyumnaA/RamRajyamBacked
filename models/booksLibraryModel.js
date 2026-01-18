@@ -10,6 +10,7 @@ const booksLibrarySchema = new mongoose.Schema({
   category: { type: String, required: true },
   image: { type: String },
   pdfFile: { type: String }, // URL to PDF file
+  screenshot: { type: String }, // URL to screenshot (PNG/JPEG/JPG)
   sellerName: { type: String, required: true },
   sellerContact: { type: String, required: true },
   sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

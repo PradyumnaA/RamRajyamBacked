@@ -19,7 +19,7 @@ router.get('/category/:category', booksLibraryController.getBooksByCategory);
 router.post('/create', auth, uploadMiddleware.single('image'), booksLibraryController.createBook);
 
 // Admin specific routes
-router.post('/admin/create-book', auth.requireAdmin, multiFileUpload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'image', maxCount: 1 }]), booksLibraryController.adminCreateBook);
+router.post('/admin/create-book', auth.requireAdmin, multiFileUpload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'image', maxCount: 1 }, { name: 'screenshot', maxCount: 1 }]), booksLibraryController.adminCreateBook);
 router.get('/admin/all-books', auth.requireAdmin, booksLibraryController.adminGetAllBooks);
 router.delete('/admin/delete-book/:id', auth.requireAdmin, booksLibraryController.adminDeleteBook);
 
