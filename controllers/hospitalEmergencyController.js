@@ -1,6 +1,6 @@
 const HospitalEmergency = require('../models/hospitalEmergencyModel');
 const HospitalEmergencyCounter = require('../models/hospitalEmergencyCounter');
-const User = require('../models/userModel');
+const User = require('../models/userModels');
 const { v4: uuidv4 } = require('uuid');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
